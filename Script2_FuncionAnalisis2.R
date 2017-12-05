@@ -115,7 +115,7 @@ AnalisisGrafico <- function (datos, model){
 Analisis <- function (datos, model){
   resumen_model = summary(model)
   # Error Estandar Residual
-  a <-100*(sd(datos$y)/(mean(datos$y)))
+  a <-100*(resumen_model$sigma/mean(datos$y))
   at <- ifelse(a<10,"Si","No")
   a <- format(a,digits = 3)
   
@@ -136,7 +136,7 @@ Analisis <- function (datos, model){
   
   # Coeficiente de determinacion R2
   Ypred = predict(model, data = datos)
-  
+  Yreal=datos[,1]
   VT = sum( (Yreal-mean(Yreal))*(Yreal-mean(Yreal)) )
   VE = sum( (Ypred-mean(Yreal))*(Ypred-mean(Yreal)) )
   VR = sum(  (Yreal-Ypred) * (Yreal-mean(Yreal)))
@@ -154,6 +154,8 @@ Analisis <- function (datos, model){
   
   # 1. Test de Normalidad ################ COMPLETAR ###############################
   # En 'et' se asigna un "Si" si satisface el test o "No" en otro caso
+  e<-residuals(model)
+  et<-ifelse(shapiro.test(e)$p.value>0.05,"Si","No")
   
   # 2. Homocedasticidad
   library(lmtest)
@@ -164,6 +166,8 @@ Analisis <- function (datos, model){
   # 3. Incorrelacion ######################## COMPLETAR ##############################
   # En 'gt' se asigna un "Si" si satisface el test o "No" en otro caso
   library(lmtest)
+  gt<-ifelse(dwtest(model,alternative = "two.sided")$p.value>0.05,"Si","No")
+  
   
   
   # 4. MSE
@@ -212,9 +216,9 @@ datos <-data.frame( y=iris$Petal.Length,
 
 
 ########## Completar desde aqui
-
-
-
+model.ejercicio2 <- lm(y~., data = datos)
+model.ejercicio2.Resultado <- Analisis(datos,model.ejercicio2)
+model.ejercicio2.Resultado
 ########## Hasta aqui
 
 
@@ -237,9 +241,9 @@ datos <-data.frame(  y=trees$Girth,
 
 
 ########## Completar desde aqui
-
-
-
+model.ejercicio3 <- lm(y~., data = datos)
+model.ejercicio3.Resultado <- Analisis(datos,model.ejercicio3)
+model.ejercicio3.Resultado
 ########## Hasta aqui
 
 AnalisisGrafico (datos, model.ejercicio3)
@@ -260,8 +264,16 @@ datos <-data.frame( y=iris$Sepal.Width,
 
 
 ########## Completar desde aqui
-
-
+model1<-lm(y~poly(x1,3),data=datos)
+model2<-lm(y~poly(x2,3),data=datos)
+model3<-lm(y~poly(x3,3),data=datos)
+model4<-lm(y~poly(x1,3)+poly(x2,3)+poly(x3,3),data=datos)
+model5<-lm(y~poly(x1,3)*poly(x2,3)*poly(x3,3),data=datos)
+model.ejercicio41.Resultado <- Analisis(datos,model1)
+model.ejercicio42.Resultado <- Analisis(datos,model2)
+model.ejercicio43.Resultado <- Analisis(datos,model3)
+model.ejercicio44.Resultado <- Analisis(datos,model4)
+model.ejercicio45.Resultado <- Analisis(datos,model5)
 
 ########## Hasta aqui
 
@@ -272,6 +284,9 @@ df <- data.frame(rbind(model1=model.ejercicio41.Resultado,
                        model5=model.ejercicio45.Resultado),
                  stringsAsFactors = FALSE)
 df
+#modelo para predecir, mirar 2 ultimas columnas, model4 mejor
+#CV: sobreajuste
+#modelo si recibimos los datos que tenemos (6 primeras columnas) model5
 
 
 

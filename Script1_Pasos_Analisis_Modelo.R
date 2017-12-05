@@ -257,7 +257,8 @@ points(1:dim(datos_ord)[1],pred, col="red")
 segments(1:dim(datos_ord)[1], datos_ord$y, 1:dim(datos_ord)[1], pred,col="blue", lty = 2)
 
 # Se puede mostrar la linea entre los ejemplos descomentando la siguiente sentencia
-# lines(1:dim(datos_ord)[1],pred, col="red")
+ 
+lines(1:dim(datos_ord)[1],pred, col="red")
 
 
 
